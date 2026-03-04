@@ -1,1 +1,1 @@
-from .transponer_medicamentos import *
+from .transponer_medicamentos_service import *
