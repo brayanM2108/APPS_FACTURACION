@@ -1,12 +1,12 @@
 import tkinter as tk
 from features.actas_medicamentos import UIActasMedicamentos
-
-
+from features.gestor_archivos.ui import VentanaGestor
+from features.asignar_facturacion.ui import VentanaAsignarFacturacion
 class VentanaPrincipal:
     def __init__(self):
         self.root = tk.Tk()
         self.root.title("APP FACTURACION")
-        self.root.geometry("768x720")
+        self.root.geometry("560x400")
         self.root.resizable(False, False)
         self.root.configure(bg="#F0F4F8")
         self._crear_ui()
@@ -28,6 +28,17 @@ class VentanaPrincipal:
             self._abrir_actas_medicamentos
         )
 
+        self._boton_feature(
+            "📁  Gestor de Archivos",
+            "Reorganiza archivos por lotes usando un plan Excel",
+            self._abrir_gestor_archivos
+        )
+
+        self._boton_feature(
+            "🧾  Asignar Facturación",
+            "Genera filas por facturador/auxiliar en un archivo Excel",
+            self._abrir_asignar_facturacion
+        )
 
     def _boton_feature(self, titulo, descripcion, comando):
         frame = tk.Frame(
@@ -55,6 +66,12 @@ class VentanaPrincipal:
 
     def _abrir_actas_medicamentos(self):
         UIActasMedicamentos(self.root)
+
+    def _abrir_gestor_archivos(self):
+        VentanaGestor(self.root)
+
+    def _abrir_asignar_facturacion(self):
+        VentanaAsignarFacturacion(self.root)
 
     def iniciar(self):
         self.root.mainloop()
