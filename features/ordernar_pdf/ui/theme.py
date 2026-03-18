@@ -1,0 +1,10 @@
+# ─── Paleta de colores ────────────────────────────────────────────────────────
+BG      = "#1e1e2e"
+SURFACE = "#2a2a3e"
+ACCENT  = "#7c6af7"
+ACCENT2 = "#5a4fcf"
+TEXT    = "#e0e0f0"
+MUTED   = "#888aaa"
+DANGER  = "#e05c7a"
+SUCCESS = "#4ecb8d"
+BORDER  = "#3a3a5a"
