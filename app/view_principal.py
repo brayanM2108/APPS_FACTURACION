@@ -3,15 +3,18 @@ from features.actas_medicamentos import UIActasMedicamentos
 from features.gestor_archivos.ui import VentanaGestor
 from features.asignar_facturacion.ui import VentanaAsignarFacturacion
 from features.ordernar_pdf.ui import VentanaUnirPDF
+from features.informe_consolidado.ui import VentanaInformeConsolidado
+from features.validar_rips import VentanaValidarRips
 
 class VentanaPrincipal:
     def __init__(self):
         self.root = tk.Tk()
         self.root.title("APP FACTURACION")
-        self.root.geometry("600x450")
+        self.root.geometry("768x720")
         self.root.resizable(False, False)
         self.root.configure(bg="#F0F4F8")
         self._crear_ui()
+
 
     def _crear_ui(self):
         tk.Label(
@@ -48,6 +51,19 @@ class VentanaPrincipal:
             self._abrir_unir_pdf
         )
 
+        self._boton_feature(
+            "📊  Consolidar Informe",
+            "Consolida el informe de Facturaciòn",
+            self.abrir_consolidar_informe
+        )
+
+        self._boton_feature(
+            "🧪  TRANSPONER RIPS A PLANTILLA",
+            "Valida y genera transaccion, usuarios y consultas en plantilla de rips",
+            self._abrir_validar_rips
+        )
+
+
     def _boton_feature(self, titulo, descripcion, comando):
         frame = tk.Frame(
             self.root, bg="white", cursor="hand2",
@@ -83,6 +99,12 @@ class VentanaPrincipal:
 
     def _abrir_unir_pdf(self):
         VentanaUnirPDF(self.root)
+
+    def abrir_consolidar_informe(self):
+        VentanaInformeConsolidado(self.root)
+
+    def _abrir_validar_rips(self):
+        VentanaValidarRips(self.root)
 
     def iniciar(self):
         self.root.mainloop()
