@@ -50,6 +50,13 @@ class VentanaGestor:
             self._aplicar_cambios
         )
 
+        tk.Button(
+            frame_acciones, text="Volver",
+            font=("Segoe UI", 9), bg="#E2E8F0", fg="#2D3748",
+            relief="flat", padx=12, pady=6, cursor="hand2",
+            command=self.ventana.destroy
+        ).pack(pady=10)
+
         # Estado
         self.label_estado = tk.Label(
             self.ventana, text="",

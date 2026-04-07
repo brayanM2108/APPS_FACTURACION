@@ -99,6 +99,18 @@ class VentanaValidarRips:
             command=self._limpiar_logs,
         ).pack(side="left", padx=8)
 
+        tk.Button(
+            frame_acciones,
+            text="Volver",
+            font=("Segoe UI", 9),
+            bg="#E2E8F0",
+            fg="#2D3748",
+            relief="flat",
+            padx=12,
+            pady=8,
+            command=self.ventana.destroy,
+        ).pack(side="right", padx=8)
+
         tk.Label(
             self.ventana,
             text="Log de ejecucion",
@@ -239,7 +251,9 @@ class VentanaValidarRips:
             salida = servicio.ejecutar()
             self.ventana.after(0, lambda: self._finalizar_ok(str(salida)))
         except Exception as exc:
-            self.ventana.after(0, lambda: self._finalizar_error(str(exc)))
+            error_texto = str(exc)
+            self.ventana.after(0, lambda e=error_texto: self._finalizar_error(e))
+
 
     def _finalizar_ok(self, salida):
         self.btn_ejecutar.config(state="normal")

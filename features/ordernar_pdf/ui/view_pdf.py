@@ -144,6 +144,9 @@ class VentanaUnirPDF(tk.Toplevel):
         )
         self._btn_merge.pack(pady=4)
 
+        self._btn(side, "Volver", self.destroy,
+                  bg=WHITE, fg=TEXT, width=18, font=("Segoe UI", 10), pady=6).pack(pady=4)
+
         # Progreso (oculto hasta que se use)
         self._progress_var = tk.DoubleVar(value=0)
         self._progress = ttk.Progressbar(

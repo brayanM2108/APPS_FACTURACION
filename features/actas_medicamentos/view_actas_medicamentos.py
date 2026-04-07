@@ -77,6 +77,13 @@ class UIActasMedicamentos:
             comando=self._ir_a_generador
         )
 
+        tk.Button(
+            frame, text="Volver",
+            font=("Segoe UI", 9), bg="#E2E8F0", fg="#2D3748",
+            relief="flat", padx=12, pady=6, cursor="hand2",
+            command=self.ventana.destroy
+        ).pack(pady=(20, 0))
+
         return frame
 
     def _boton_opcion(self, parent, titulo, descripcion, comando):

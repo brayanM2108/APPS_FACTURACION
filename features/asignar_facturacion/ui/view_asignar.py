@@ -95,6 +95,13 @@ class VentanaAsignarFacturacion(tk.Toplevel):
             command=self._generar
         ).pack(side="left", padx=12)
 
+        tk.Button(
+            frame_botones, text="Volver",
+            font=("Segoe UI", 9), bg="#E2E8F0", fg="#2D3748",
+            relief="flat", padx=10, pady=6,
+            command=self.destroy
+        ).pack(side="left", padx=6)
+
     def _crear_seccion(self, titulo: str, miembros: list):
         # Encabezado del grupo
         tk.Label(

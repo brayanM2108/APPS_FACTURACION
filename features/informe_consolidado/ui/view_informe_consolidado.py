@@ -107,6 +107,18 @@ class VentanaInformeConsolidado:
             command=self._limpiar_logs,
         ).pack(side="left", padx=8)
 
+        tk.Button(
+            frame_acciones,
+            text="Volver",
+            font=("Segoe UI", 9),
+            bg="#E2E8F0",
+            fg="#2D3748",
+            relief="flat",
+            padx=12,
+            pady=8,
+            command=self.ventana.destroy,
+        ).pack(side="right", padx=8)
+
         tk.Label(
             self.ventana,
             text="Log de ejecucion",
