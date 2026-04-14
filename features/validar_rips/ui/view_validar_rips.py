@@ -5,15 +5,20 @@ from tkinter import filedialog, messagebox, ttk
 from tkinter.scrolledtext import ScrolledText
 
 from features.validar_rips.core.validar_rips_service import CONFIG, ValidadorRipsService
+from ui.theme import aplicar_theme_ventana, BG
 
 
 class VentanaValidarRips:
     def __init__(self, parent):
         self.ventana = tk.Toplevel(parent)
-        self.ventana.title("Validar RIPS")
-        self.ventana.geometry("760x620")
-        self.ventana.resizable(False, False)
-        self.ventana.configure(bg="#F0F4F8")
+        aplicar_theme_ventana(
+            self.ventana,
+            title="Validar RIPS",
+            size=(760, 620),
+            min_size=None,
+            bg=BG,
+            resizable=(False, False),
+        )
 
         self.var_source = tk.StringVar(value=str(CONFIG.get("source_file", "")))
         self.var_template = tk.StringVar(value=str(CONFIG.get("template_file", "")))

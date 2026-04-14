@@ -1,16 +1,21 @@
 import tkinter as tk
 from tkinter import ttk, messagebox, filedialog
+from ui.theme import aplicar_theme_ventana, COMPACT_SIZE, COMPACT_MIN, BG
 from features.asignar_facturacion.core.asignar_facturadores import cargar_facturadores, generar_excel
 
 
 class VentanaAsignarFacturacion(tk.Toplevel):
     def __init__(self, parent):
         super().__init__(parent)
-        self.title("Asignar Facturación")
-        self.geometry("560x620")
-        self.resizable(False, False)
-        self.configure(bg="#F0F4F8")
-        self.grab_set()
+        aplicar_theme_ventana(
+            self,
+            title="Asignar Facturación",
+            size=(560, 620),
+            min_size=None,
+            bg=BG,
+            resizable=(False, False),
+            modal=True,
+        )
 
         self._datos = cargar_facturadores()
         # {nombre: {'var_check': BooleanVar, 'var_filas': IntVar}}

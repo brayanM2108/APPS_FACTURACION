@@ -2,17 +2,24 @@ import tkinter as tk
 from features.actas_medicamentos import UIActasMedicamentos
 from features.gestor_archivos.ui import VentanaGestor
 from features.asignar_facturacion.ui import VentanaAsignarFacturacion
-from features.ordernar_pdf.ui import VentanaUnirPDF
+from features.agrupar_pdf.ui import VentanaUnirPDF
 from features.informe_consolidado.ui import VentanaInformeConsolidado
 from features.validar_rips import VentanaValidarRips
+from features.comprimir_pdf.ui import VentanaComprimirPDF
+from ui.theme import aplicar_theme_ventana, BG, DEFAULT_SIZE, DEFAULT_MIN_SIZE, SIZE_PRINCIPAL_VIEW
 
 class VentanaPrincipal:
     def __init__(self):
         self.root = tk.Tk()
-        self.root.title("APP FACTURACION")
-        self.root.geometry("768x720")
-        self.root.resizable(False, False)
-        self.root.configure(bg="#F0F4F8")
+        # aplicar theme centralizado
+        aplicar_theme_ventana(
+            self.root,
+            title="APP FACTURACION",
+            size=SIZE_PRINCIPAL_VIEW,
+            min_size=DEFAULT_MIN_SIZE,
+            bg=BG,
+            resizable=(False, False),
+        )
         self._crear_ui()
 
 
@@ -49,6 +56,12 @@ class VentanaPrincipal:
             "🧾  Unir pdf",
             "Une multiples archivos PDF en uno solo",
             self._abrir_unir_pdf
+        )
+
+        self._boton_feature(
+            "🗜 Comprimir PDF",
+            "Comprime PDFs para reducir su tamaño manteniendo la calidad",
+            self._abrir_comprimir_pdf
         )
 
         self._boton_feature(
@@ -105,6 +118,9 @@ class VentanaPrincipal:
 
     def _abrir_validar_rips(self):
         VentanaValidarRips(self.root)
+
+    def _abrir_comprimir_pdf(self):
+        VentanaComprimirPDF(self.root)
 
     def iniciar(self):
         self.root.mainloop()

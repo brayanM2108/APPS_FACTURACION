@@ -1,15 +1,21 @@
 import tkinter as tk
 from features.actas_medicamentos.transposicion.ui.view_transponer_medicamentos import VentanaTransposicion
 from features.actas_medicamentos.generador_actas.ui.view_generador_actas import VistaCarga
+from ui.theme import aplicar_theme_ventana, COMPACT_SIZE, COMPACT_MIN, BG
 
 
 class UIActasMedicamentos:
     def __init__(self, parent):
         self.ventana = tk.Toplevel(parent)
-        self.ventana.title("Actas Medicamentos")
-        self.ventana.geometry("560x400")
-        self.ventana.resizable(False, False)
-        self.ventana.configure(bg="#F0F4F8")
+        # aplicar theme a esta ventana
+        aplicar_theme_ventana(
+            self.ventana,
+            title="Actas Medicamentos",
+            size=COMPACT_SIZE,
+            min_size=COMPACT_MIN,
+            bg=BG,
+            resizable=(False, False),
+        )
 
         self.vista_actual = None
         self._mostrar_menu()

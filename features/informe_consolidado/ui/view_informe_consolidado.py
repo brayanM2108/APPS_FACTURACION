@@ -4,15 +4,22 @@ from tkinter import filedialog, messagebox, ttk
 from tkinter.scrolledtext import ScrolledText
 
 from features.informe_consolidado.core.consolidador_service import ejecutar_consolidacion
+from ui.theme import aplicar_theme_ventana, DEFAULT_SIZE, DEFAULT_MIN_SIZE, BG
 
 
 class VentanaInformeConsolidado:
     def __init__(self, parent):
+        # Crear Toplevel y aplicar theme central
         self.ventana = tk.Toplevel(parent)
-        self.ventana.title("Consolidar Informe")
-        self.ventana.geometry("760x640")
-        self.ventana.resizable(False, False)
-        self.ventana.configure(bg="#F0F4F8")
+        aplicar_theme_ventana(
+            self.ventana,
+            title="Consolidar Informe",
+            size=DEFAULT_SIZE,
+            min_size=DEFAULT_MIN_SIZE,
+            bg=BG,
+            resizable=(False, False),
+            modal=False,
+        )
 
         self.var_factura_ele = tk.StringVar()
         self.var_facturado = tk.StringVar()

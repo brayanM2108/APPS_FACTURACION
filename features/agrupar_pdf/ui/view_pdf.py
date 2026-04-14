@@ -8,7 +8,10 @@ import time
 import tkinter as tk
 from tkinter import ttk, filedialog, messagebox
 
-from features.ordernar_pdf.core.agrupar import cargar_metadatos_async, unir_pdfs
+from features.agrupar_pdf.core.agrupar import cargar_metadatos_async, unir_pdfs
+from features.comprimir_pdf.core.comprimir_service import es_pesado, UMBRAL_DEFECTO, _fmt_bytes, tamaño_bytes
+from features.comprimir_pdf.ui.view_comprimir import VentanaComprimirPDF
+from ui.theme import aplicar_theme_ventana, DEFAULT_SIZE, DEFAULT_MIN_SIZE, BG
 
 # ── Paleta (alineada con el resto de la app) ──────────────────────────────────
 BG      = "#F0F4F8"
@@ -27,12 +30,15 @@ PAGE_SIZE = 200   # items visibles por página
 class VentanaUnirPDF(tk.Toplevel):
     def __init__(self, parent: tk.Tk):
         super().__init__(parent)
-        self.title("Unir PDFs")
-        self.geometry("820x580")
-        self.minsize(700, 480)
-        self.configure(bg=BG)
-        self.resizable(True, True)
-        self.grab_set()             # modal
+        aplicar_theme_ventana(
+            self,
+            title="Unir PDFs",
+            size=DEFAULT_SIZE,
+            min_size=DEFAULT_MIN_SIZE,
+            bg=BG,
+            resizable=(True, True),
+            modal=True,
+        )
 
         # Estado
         self.pdf_files:    list[str]      = []
@@ -144,8 +150,9 @@ class VentanaUnirPDF(tk.Toplevel):
         )
         self._btn_merge.pack(pady=4)
 
-        self._btn(side, "Volver", self.destroy,
-                  bg=WHITE, fg=TEXT, width=18, font=("Segoe UI", 10), pady=6).pack(pady=4)
+        # Botón Volver (cierra la ventana y devuelve el foco al padre)
+        self._btn(side, "Volver", self._on_volver,
+                  fg=MUTED, width=18, font=("Segoe UI", 9), pady=6).pack(pady=(8, 4))
 
         # Progreso (oculto hasta que se use)
         self._progress_var = tk.DoubleVar(value=0)
@@ -338,6 +345,29 @@ class VentanaUnirPDF(tk.Toplevel):
                 0, lambda e=err: self._on_error(e)),
         )
 
+    def _on_volver(self):
+        """Cerrar la ventana actual y devolver el foco al padre."""
+        try:
+            # liberar modal si aplica
+            try:
+                self.grab_release()
+            except Exception:
+                pass
+            parent = self.master if hasattr(self, 'master') else None
+            self.destroy()
+            if parent:
+                try:
+                    parent.focus_force()
+                except Exception:
+                    pass
+        except Exception as e:
+            # En caso de error, mostrar diálogo y no impedir el cierre
+            try:
+                from tkinter import messagebox
+                messagebox.showerror("Error", f"No se pudo volver: {e}", parent=self)
+            except Exception:
+                pass
+
     def _fin_indexado(self):
         self._refresh_list()
         self._btn_merge.config(state="normal", text="💾  Unir y Guardar")
@@ -378,6 +408,21 @@ class VentanaUnirPDF(tk.Toplevel):
             f"✔ Guardado: {os.path.basename(destino)}  "
             f"({n_files} archivos · {n_pages} páginas · {tiempo_str})"
         )
+
+        # ── Ofrecer compresión si el resultado es pesado ──────────────────────
+        size = tamaño_bytes(destino)
+        if es_pesado(destino, UMBRAL_DEFECTO):
+            comprimir = messagebox.askyesno(
+                "Archivo pesado",
+                f"El PDF resultante pesa {_fmt_bytes(size)}, "
+                f"lo que supera el umbral de {_fmt_bytes(UMBRAL_DEFECTO)}.\n\n"
+                f"¿Deseas comprimirlo ahora?",
+                parent=self,
+            )
+            if comprimir:
+                VentanaComprimirPDF(self, archivo_inicial=destino)
+                return   # el messagebox de éxito lo muestra la ventana de compresión
+
         messagebox.showinfo(
             "¡Listo!",
             f"PDF guardado:\n{destino}\n\n"

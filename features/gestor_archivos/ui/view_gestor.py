@@ -1,15 +1,20 @@
 import tkinter as tk
 from tkinter import filedialog, messagebox
+from ui.theme import aplicar_theme_ventana, COMPACT_SIZE, COMPACT_MIN, BG
 import threading
 
 
 class VentanaGestor:
     def __init__(self, parent):
         self.ventana = tk.Toplevel(parent)
-        self.ventana.title("Gestor de Archivos")
-        self.ventana.geometry("560x400")
-        self.ventana.resizable(False, False)
-        self.ventana.configure(bg="#F0F4F8")
+        aplicar_theme_ventana(
+            self.ventana,
+            title="Gestor de Archivos",
+            size=COMPACT_SIZE,
+            min_size=COMPACT_MIN,
+            bg=BG,
+            resizable=(False, False),
+        )
         self._crear_ui()
 
     def _crear_ui(self):
