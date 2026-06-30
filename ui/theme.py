@@ -4,16 +4,22 @@
 import tkinter as tk
 from typing import Tuple
 
-# Paleta común (puedes ajustar colores aquí y se replicarán)
-BG = "#F0F4F8"
+# Paleta Goleman (ajusta aquí y se replica en toda la app)
+NAVY = "#000927"
+ORANGE = "#F97838"
+SKY = "#A7E2FF"
+BLUE = "#1565C0"
+
+BG = "#F5F7FA"
 WHITE = "#FFFFFF"
-ACCENT = "#2B6CB0"
-ACCENT2 = "#1A4A8A"
-TEXT = "#2D3748"
-MUTED = "#718096"
+TEXT = "#1E293B"
+MUTED = "#64748B"
 DANGER = "#C53030"
 BORDER = "#E2E8F0"
 SEL_BG = "#BEE3F8"
+
+ACCENT = BLUE
+ACCENT2 = "#0F4A8A"
 
 # Fuentes
 FONT_BASE = ("Segoe UI", 10)
@@ -21,11 +27,11 @@ FONT_HEADER = ("Segoe UI", 16, "bold")
 FONT_SMALL = ("Segoe UI", 9)
 
 # Tamaños por defecto (ancho x alto)
-DEFAULT_SIZE = (820, 580)      # tamaño por defecto para ventanas Toplevel grandes
-DEFAULT_MIN_SIZE = (700, 480)  # tamaño mínimo por defecto
-SIZE_PRINCIPAL_VIEW = (768, 720)
-
-COMPACT_SIZE = (600, 420)      # tamaño para ventanas compactas (ej. compresión)
+DEFAULT_SIZE = (1200, 800)
+DEFAULT_MIN_SIZE = (820, 620)
+SIZE_PRINCIPAL_VIEW = (1200, 800)
+SIZE_CONSOLIDADOR_VIEW = (1200, 800)
+COMPACT_SIZE = (900, 600)
 COMPACT_MIN = (520, 380)
 
 # Helper: aplicar configuración base a una ventana (Tk o Toplevel)
@@ -38,6 +44,7 @@ def aplicar_theme_ventana(
         bg: str | None = None,
         resizable: Tuple[bool, bool] = (False, False),
         modal: bool = False,
+        fullscreen: bool = False,
 ):
     if title:
         try:
@@ -45,20 +52,30 @@ def aplicar_theme_ventana(
         except Exception:
             pass
 
-    w, h = size if size is not None else DEFAULT_SIZE
-    try:
-        # centrar en pantalla
-        win.update_idletasks()
-        screen_w = win.winfo_screenwidth()
-        screen_h = win.winfo_screenheight()
-        x = max(0, (screen_w - w) // 2)
-        y = max(0, (screen_h - h) // 2)
-        win.geometry(f"{w}x{h}+{x}+{y}")
-    except Exception:
+    if fullscreen:
         try:
-            win.geometry(f"{w}x{h}")
+            win.state("zoomed")
         except Exception:
-            pass
+            try:
+                w = win.winfo_screenwidth()
+                h = win.winfo_screenheight()
+                win.geometry(f"{w}x{h}+0+0")
+            except Exception:
+                pass
+    else:
+        w, h = size if size is not None else DEFAULT_SIZE
+        try:
+            win.update_idletasks()
+            screen_w = win.winfo_screenwidth()
+            screen_h = win.winfo_screenheight()
+            x = max(0, (screen_w - w) // 2)
+            y = max(0, (screen_h - h) // 2)
+            win.geometry(f"{w}x{h}+{x}+{y}")
+        except Exception:
+            try:
+                win.geometry(f"{w}x{h}")
+            except Exception:
+                pass
 
     if min_size:
         try:
