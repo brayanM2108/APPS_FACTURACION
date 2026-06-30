@@ -3,7 +3,6 @@ import traceback
 from datetime import datetime
 import warnings
 
-import numpy as np
 import pandas as pd
 from pandas.errors import SettingWithCopyWarning
 
@@ -25,6 +24,7 @@ def ejecutar_consolidacion(
     facturacion_informe_path,
     consolidado_path,
     salida_path,
+    meses_a_eliminar=None,
     on_progress=None,
     on_log=None,
     log_path=None,
@@ -54,6 +54,13 @@ def ejecutar_consolidacion(
         with open(log_path, "w", encoding="utf-8") as archivo_log:
             archivo_log.write("Inicio de consolidacion\n")
 
+        if meses_a_eliminar is None:
+            meses_a_eliminar = [
+                "NOVIEMBRE_2025", "DICIEMBRE_2025", "ENERO_2026", "FEBRERO_2026", "MARZO_2026", "ABRIL_2026"
+            ]
+        meses_a_eliminar = [str(m).strip().upper() for m in meses_a_eliminar if str(m).strip()]
+        registrar(f"Meses a eliminar aplicados: {', '.join(meses_a_eliminar) if meses_a_eliminar else 'Ninguno'}")
+
         progreso(5, "Leyendo facturacion electronica")
         FacturaEle = factura_electronica_path
         dfFactuEle = pd.read_csv(FacturaEle, converters={"Prefijo12": limpiar_a_float})
@@ -79,10 +86,8 @@ def ejecutar_consolidacion(
         progreso(20, "Leyendo archivo facturado")
         Facturado = facturado_path
         dffacturadoActivo = pd.read_excel(Facturado, sheet_name="FACTURADO")
-        meses_a_eliminar = [
-            "OCTUBRE_2025", "NOVIEMBRE_2025", "DICIEMBRE_2025", "ENERO_2026", "FEBRERO_2026", "MARZO_2026"
-        ]
         dffacturadoActivo["Llave"] = dffacturadoActivo["MES"].astype(str) + "_" + dffacturadoActivo["AÑO"].astype(str)
+        dffacturadoActivo["Llave"] = dffacturadoActivo["Llave"].str.upper().str.strip()
         dffactuActivoFiltrado = dffacturadoActivo[~dffacturadoActivo["Llave"].isin(meses_a_eliminar)]
         nuevos_nombres_F = [
             "PREFIJO", "FACTURA", "FECHA LEGALIZACION", "FECHA FACTURA", "CUFE",
@@ -106,6 +111,7 @@ def ejecutar_consolidacion(
 
         dffacturadoNulo = pd.read_excel(Facturado, sheet_name="ANULADO")
         dffacturadoNulo["Llave"] = dffacturadoNulo["MES"].astype(str) + "_" + dffacturadoNulo["AÑO"].astype(str)
+        dffacturadoNulo["Llave"] = dffacturadoNulo["Llave"].str.upper().str.strip()
         dffacturadoNuloFiltrado = dffacturadoNulo[~dffacturadoNulo["Llave"].isin(meses_a_eliminar)]
         nuevos_nombres_N = [
             "PREFIJO", "FACTURA", "FECHA LEGALIZACION", "FECHA FACTURA", "CUFE",
