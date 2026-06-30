@@ -4,6 +4,13 @@ import pandas as pd
 from tqdm import tqdm
 
 
+def _normalizar_ext_pdf(ruta):
+    nombre, ext = os.path.splitext(ruta)
+    if ext.lower() == ".pdf":
+        return nombre + ".pdf"
+    return ruta
+
+
 def listar_archivos(carpeta):
     """Lista todos los archivos en una carpeta y sus subcarpetas"""
     archivos = []
@@ -96,8 +103,10 @@ def aplicar_cambios(tabla_path, carpeta_base, simular=False):
 
                 # Ejecutar la operación
                 if accion == "mover":
+                    destino_final = _normalizar_ext_pdf(destino_final)
                     shutil.move(origen, destino_final)
                 elif accion == "copiar":
+                    destino_final = _normalizar_ext_pdf(destino_final)
                     shutil.copy2(origen, destino_final)
                 elif accion == "eliminar":
                     os.remove(origen)
