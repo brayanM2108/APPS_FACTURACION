@@ -76,8 +76,11 @@ def normalize_text(value: Any) -> str:
 def to_clean_text(value: Any) -> str:
     if pd.isna(value):
         return ""
-    if isinstance(value, float) and value.is_integer():
-        return str(int(value))
+
+    if isinstance(value, float):
+        if value.is_integer():
+            return format(int(value), "d")
+
     return str(value).strip()
 
 
@@ -167,8 +170,17 @@ def normalize_incapacidad(value: Any) -> str:
     return ""
 
 
-def normalize_country_or_municipio_code(value: Any) -> str:
+def normalize_country_code(value: Any) -> str:
     return extract_leading_digits(value)
+
+
+def normalize_municipio_code(value: Any) -> str:
+    digits = extract_leading_digits(value)
+
+    if not digits:
+        return ""
+
+    return digits.zfill(5)
 
 
 def normalize_zona(value: Any) -> str:
@@ -409,7 +421,8 @@ class ValidadorRipsService:
             normalize_tipo_usuario=normalize_tipo_usuario,
             normalize_fecha_yyyy_mm_dd=normalize_fecha_yyyy_mm_dd,
             normalize_sexo=normalize_sexo,
-            normalize_country_or_municipio_code=normalize_country_or_municipio_code,
+            normalize_country_code=normalize_country_code,
+            normalize_municipio_code=normalize_municipio_code,
             normalize_zona=normalize_zona,
             normalize_incapacidad=normalize_incapacidad,
             validate_usuario_row=validate_usuario_row,
@@ -449,7 +462,11 @@ class ValidadorRipsService:
         output_file = Path(str(self.config["output_file"]))
 
         self._progress(5, "Leyendo archivo origen")
-        df_source = pd.read_excel(source_file, sheet_name=int(self.config["source_sheet"]))
+        df_source = pd.read_excel(
+            source_file,
+            sheet_name=int(self.config["source_sheet"]),
+            dtype=str
+        )
 
         self._progress(20, "Abriendo plantilla")
         wb = load_workbook(template_file, keep_vba=True)

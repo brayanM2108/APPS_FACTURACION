@@ -90,6 +90,7 @@ class ProcesadorHojaConsultas:
             "consecutivoUsuario": "Número identificación",
             "codPrestador": "Código Prestador",
             "fechaInicioAtencion": "Fecha y hora",
+            "numAutorizacion": "Autorización",
             "codConsulta": "Código",
             "modalidadGrupoServicioTecSal": "Modalidad tecnología salud",
             "grupoServicios": "Grupo servicios",
@@ -127,7 +128,7 @@ class ProcesadorHojaConsultas:
                 "consecutivoUsuario": consecutivo_usuario,
                 "codPrestador": self._to_clean_text(src_row[resolved["codPrestador"]]),
                 "fechaInicioAtencion": self._normalize_fecha_yyyy_mm_dd_hh_mm(src_row[resolved["fechaInicioAtencion"]]),
-                "numAutorizacion": "",
+                "numAutorizacion": self._to_clean_text(src_row[resolved["numAutorizacion"]]),
                 "codConsulta": self._to_clean_text(src_row[resolved["codConsulta"]]),
                 "modalidadGrupoServicioTecSal": self._normalize_two_digit_code(
                     src_row[resolved["modalidadGrupoServicioTecSal"]], self._allowed_modalidad

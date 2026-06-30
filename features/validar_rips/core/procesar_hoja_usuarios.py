@@ -15,7 +15,8 @@ class ProcesadorHojaUsuarios:
             normalize_tipo_usuario: Callable[[Any], str],
             normalize_fecha_yyyy_mm_dd: Callable[[Any], str],
             normalize_sexo: Callable[[Any], str],
-            normalize_country_or_municipio_code: Callable[[Any], str],
+            normalize_country_code: Callable[[Any], str],
+            normalize_municipio_code: Callable[[Any], str],
             normalize_zona: Callable[[Any], str],
             normalize_incapacidad: Callable[[Any], str],
             validate_usuario_row: Callable[[Dict[str, Any]], None],
@@ -28,7 +29,8 @@ class ProcesadorHojaUsuarios:
         self._normalize_tipo_usuario = normalize_tipo_usuario
         self._normalize_fecha_yyyy_mm_dd = normalize_fecha_yyyy_mm_dd
         self._normalize_sexo = normalize_sexo
-        self._normalize_country_or_municipio_code = normalize_country_or_municipio_code
+        self._normalize_country_code = normalize_country_code
+        self._normalize_municipio_code = normalize_municipio_code
         self._normalize_zona = normalize_zona
         self._normalize_incapacidad = normalize_incapacidad
         self._validate_usuario_row = validate_usuario_row
@@ -101,12 +103,20 @@ class ProcesadorHojaUsuarios:
                 "tipoUsuario": self._normalize_tipo_usuario(src_row[resolved["tipoUsuario"]]),
                 "fechaNacimiento": self._normalize_fecha_yyyy_mm_dd(src_row[resolved["fechaNacimiento"]]),
                 "codSexo": self._normalize_sexo(src_row[resolved["codSexo"]]),
-                "codPaisResidencia": self._normalize_country_or_municipio_code(src_row[resolved["codPaisResidencia"]]),
-                "codMunicipioResidencia": self._normalize_country_or_municipio_code(src_row[resolved["codMunicipioResidencia"]]),
                 "codZonaTerritorialResidencia": self._normalize_zona(src_row[resolved["codZonaTerritorialResidencia"]]),
                 "incapacidad": self._normalize_incapacidad(src_row[resolved["incapacidad"]]),
-                "codPaisOrigen": self._normalize_country_or_municipio_code(src_row[resolved["codPaisOrigen"]]),
                 "consecutivo": next_consecutivo,
+                "codPaisResidencia": self._normalize_country_code(
+                    src_row[resolved["codPaisResidencia"]]
+                ),
+
+                "codMunicipioResidencia": self._normalize_municipio_code(
+                    src_row[resolved["codMunicipioResidencia"]]
+                ),
+
+                "codPaisOrigen": self._normalize_country_code(
+                    src_row[resolved["codPaisOrigen"]]
+                ),
             }
 
             if out["numDocumentoIdentificacion"] in seen_num_doc:
@@ -126,6 +136,9 @@ class ProcesadorHojaUsuarios:
                 cell = ws.cell(row=row_out, column=target_cols[field], value=value_to_write)
                 if field == "consecutivo":
                     cell.number_format = "0"
+
+                if field in ["codMunicipioResidencia"]:
+                    cell.number_format = "@"
 
             seen_num_doc.add(out["numDocumentoIdentificacion"])
             usuarios_ids.add(out["numDocumentoIdentificacion"])
