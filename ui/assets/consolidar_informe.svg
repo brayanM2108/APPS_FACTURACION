@@ -1,0 +1,204 @@
+<svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 256 256">
+
+    <defs>
+        <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+            <feDropShadow
+                    dx="0"
+                    dy="4"
+                    stdDeviation="6"
+                    flood-color="#000927"
+                    flood-opacity="0.10"/>
+        </filter>
+    </defs>
+
+
+    <!-- Contenido escalado para mantener todo dentro del círculo -->
+    <g transform="translate(128 128) scale(0.90) translate(-128 -128)">
+
+        <!-- Documentos origen -->
+        <g filter="url(#shadow)">
+
+            <!-- Documento 1 -->
+            <rect
+                    x="40"
+                    y="72"
+                    width="50"
+                    height="65"
+                    rx="10"
+                    fill="#FFFFFF"
+                    stroke="#E2E8F0"
+                    stroke-width="2"/>
+
+            <rect x="50" y="88" width="28" height="4" rx="2" fill="#CBD5E1"/>
+            <rect x="50" y="100" width="22" height="4" rx="2" fill="#CBD5E1"/>
+            <rect x="50" y="112" width="26" height="4" rx="2" fill="#CBD5E1"/>
+
+            <!-- Documento 2 -->
+            <rect
+                    x="30"
+                    y="107"
+                    width="50"
+                    height="65"
+                    rx="10"
+                    fill="#FFFFFF"
+                    stroke="#E2E8F0"
+                    stroke-width="2"/>
+
+            <rect x="40" y="123" width="28" height="4" rx="2" fill="#CBD5E1"/>
+            <rect x="40" y="135" width="22" height="4" rx="2" fill="#CBD5E1"/>
+            <rect x="40" y="147" width="26" height="4" rx="2" fill="#CBD5E1"/>
+
+            <!-- Documento 3 -->
+            <rect
+                    x="50"
+                    y="142"
+                    width="50"
+                    height="65"
+                    rx="10"
+                    fill="#FFFFFF"
+                    stroke="#E2E8F0"
+                    stroke-width="2"/>
+
+            <rect x="60" y="158" width="28" height="4" rx="2" fill="#CBD5E1"/>
+            <rect x="60" y="170" width="22" height="4" rx="2" fill="#CBD5E1"/>
+            <rect x="60" y="182" width="26" height="4" rx="2" fill="#CBD5E1"/>
+
+        </g>
+
+        <!-- Flechas hacia consolidación -->
+        <g
+                stroke="#F97838"
+                stroke-width="5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                fill="none">
+
+            <!-- Superior -->
+            <path d="M90 104 H118"/>
+            <path d="M108 96 L120 104 L108 112"/>
+
+            <!-- Centro -->
+            <path d="M80 139 H118"/>
+            <path d="M108 131 L120 139 L108 147"/>
+
+            <!-- Inferior -->
+            <path d="M100 174 H118"/>
+            <path d="M108 166 L120 174 L108 182"/>
+
+        </g>
+
+        <!-- Nodo consolidación -->
+        <g filter="url(#shadow)">
+            <circle
+                    cx="140"
+                    cy="139"
+                    r="26"
+                    fill="#1565C0"/>
+
+            <path
+                    d="M130 139H150
+                   M140 129V149"
+                    stroke="#FFFFFF"
+                    stroke-width="4"
+                    stroke-linecap="round"/>
+        </g>
+
+        <!-- Flecha hacia dashboard -->
+        <g
+                stroke="#F97838"
+                stroke-width="5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                fill="none">
+
+            <path d="M166 139 H186"/>
+            <path d="M176 131 L188 139 L176 147"/>
+
+        </g>
+
+        <!-- Dashboard resultado -->
+        <g filter="url(#shadow)">
+
+            <rect
+                    x="170"
+                    y="78"
+                    width="55"
+                    height="120"
+                    rx="12"
+                    fill="#FFFFFF"
+                    stroke="#E2E8F0"
+                    stroke-width="2"/>
+
+            <!-- Header -->
+            <rect
+                    x="170"
+                    y="78"
+                    width="55"
+                    height="18"
+                    rx="12"
+                    fill="#000927"/>
+
+            <!-- Barras -->
+            <rect
+                    x="180"
+                    y="118"
+                    width="8"
+                    height="45"
+                    rx="3"
+                    fill="#1565C0"/>
+
+            <rect
+                    x="193"
+                    y="103"
+                    width="8"
+                    height="60"
+                    rx="3"
+                    fill="#F97838"/>
+
+            <rect
+                    x="206"
+                    y="128"
+                    width="8"
+                    height="35"
+                    rx="3"
+                    fill="#22C55E"/>
+
+            <!-- Curva -->
+            <path
+                    d="M180 183
+                   C190 163,
+                     200 168,
+                     215 143"
+                    fill="none"
+                    stroke="#1565C0"
+                    stroke-width="3"
+                    stroke-linecap="round"/>
+
+        </g>
+
+        <!-- Badge éxito -->
+        <g filter="url(#shadow)">
+
+            <circle
+                    cx="198"
+                    cy="198"
+                    r="16"
+                    fill="#22C55E"/>
+
+            <path
+                    d="M192 198
+                   L197 203
+                   L206 192"
+                    fill="none"
+                    stroke="#FFFFFF"
+                    stroke-width="3"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"/>
+
+        </g>
+
+    </g>
+
+</svg>

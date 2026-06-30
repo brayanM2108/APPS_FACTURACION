@@ -1,0 +1,114 @@
+<svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 256 256">
+
+    <!-- Sombras suaves -->
+    <defs>
+        <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+            <feDropShadow dx="0" dy="4" stdDeviation="6"
+                          flood-color="#000927"
+                          flood-opacity="0.10"/>
+        </filter>
+    </defs>
+
+
+
+    <!-- Clipboard -->
+    <g filter="url(#shadow)">
+        <rect
+                x="70"
+                y="48"
+                width="116"
+                height="150"
+                rx="18"
+                fill="#FFFFFF"
+                stroke="#E2E8F0"
+                stroke-width="2"/>
+
+        <!-- Clip -->
+        <rect
+                x="103"
+                y="32"
+                width="50"
+                height="26"
+                rx="10"
+                fill="#1565C0"/>
+
+        <!-- Líneas -->
+        <rect x="92" y="82" width="72" height="8" rx="4"
+              fill="#CBD5E1"/>
+
+        <rect x="92" y="104" width="52" height="8" rx="4"
+              fill="#CBD5E1"/>
+
+        <rect x="92" y="126" width="64" height="8" rx="4"
+              fill="#CBD5E1"/>
+
+        <rect x="92" y="148" width="44" height="8" rx="4"
+              fill="#CBD5E1"/>
+    </g>
+
+    <!-- Documento -->
+    <g filter="url(#shadow)">
+        <rect
+                x="132"
+                y="98"
+                width="68"
+                height="86"
+                rx="10"
+                fill="#FFFFFF"
+                stroke="#E2E8F0"
+                stroke-width="2"/>
+
+        <path
+                d="M180 98 L200 118 L180 118 Z"
+                fill="#A7E2FF"/>
+
+        <rect x="145" y="128" width="34" height="5"
+              rx="2.5" fill="#CBD5E1"/>
+
+        <rect x="145" y="142" width="26" height="5"
+              rx="2.5" fill="#CBD5E1"/>
+    </g>
+
+    <!-- Cruz médica -->
+    <g filter="url(#shadow)">
+        <circle
+                cx="172"
+                cy="190"
+                r="26"
+                fill="#F97838"/>
+
+        <rect
+                x="167"
+                y="177"
+                width="10"
+                height="26"
+                rx="2"
+                fill="#FFFFFF"/>
+
+        <rect
+                x="159"
+                y="185"
+                width="26"
+                height="10"
+                rx="2"
+                fill="#FFFFFF"/>
+    </g>
+
+    <!-- Check de completado -->
+    <circle
+            cx="82"
+            cy="190"
+            r="18"
+            fill="#22C55E"/>
+
+    <path
+            d="M74 190 L80 196 L91 184"
+            fill="none"
+            stroke="#FFFFFF"
+            stroke-width="4"
+            stroke-linecap="round"
+            stroke-linejoin="round"/>
+
+</svg>

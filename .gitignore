@@ -1,0 +1,15 @@
+__pycache__/
+*.pyc
+*.pyo
+build/
+dist/
+*.spec
+logs/
+features/data/
+.idea/
+*.json
+__pycache__/
+*.egg-info/
+.env
+venv/
+*.exe

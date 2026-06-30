@@ -1,0 +1,217 @@
+<svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 256 256">
+
+    <defs>
+        <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+            <feDropShadow
+                    dx="0"
+                    dy="4"
+                    stdDeviation="5"
+                    flood-color="#000927"
+                    flood-opacity="0.10"/>
+        </filter>
+    </defs>
+
+    <!-- Usuario principal -->
+    <g filter="url(#shadow)">
+
+        <rect
+                x="38"
+                y="80"
+                width="70"
+                height="90"
+                rx="14"
+                fill="#FFFFFF"
+                stroke="#E2E8F0"
+                stroke-width="2"/>
+
+        <!-- Avatar -->
+        <circle
+                cx="73"
+                cy="105"
+                r="12"
+                fill="#1565C0"/>
+
+        <path
+                d="M55 140
+               C55 122,
+                 91 122,
+                 91 140"
+                fill="#1565C0"/>
+
+        <!-- Texto -->
+        <rect
+                x="52"
+                y="150"
+                width="42"
+                height="5"
+                rx="2.5"
+                fill="#CBD5E1"/>
+
+    </g>
+
+    <!-- Nodo asignación -->
+    <g filter="url(#shadow)">
+
+        <circle
+                cx="128"
+                cy="128"
+                r="24"
+                fill="#F97838"/>
+
+        <path
+                d="M118 128 H138"
+                stroke="#FFFFFF"
+                stroke-width="5"
+                stroke-linecap="round"/>
+
+        <path
+                d="M130 120
+               L138 128
+               L130 136"
+                fill="none"
+                stroke="#FFFFFF"
+                stroke-width="5"
+                stroke-linecap="round"
+                stroke-linejoin="round"/>
+
+    </g>
+
+    <!-- Flechas -->
+    <g
+            stroke="#1565C0"
+            stroke-width="3"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            fill="none">
+
+        <path d="M152 110 C165 100 175 95 188 88"/>
+        <path d="M152 128 H188"/>
+        <path d="M152 146 C165 156 175 161 188 168"/>
+
+        <!-- puntas -->
+        <path d="M180 82 L190 88 L180 94"/>
+        <path d="M180 122 L190 128 L180 134"/>
+        <path d="M180 162 L190 168 L180 174"/>
+
+    </g>
+
+    <!-- Factura superior -->
+    <g filter="url(#shadow)">
+
+        <rect
+                x="188"
+                y="62"
+                width="40"
+                height="52"
+                rx="8"
+                fill="#FFFFFF"
+                stroke="#E2E8F0"
+                stroke-width="2"/>
+
+        <rect
+                x="196"
+                y="76"
+                width="24"
+                height="10"
+                rx="3"
+                fill="#1565C0"/>
+
+        <text
+                x="208"
+                y="84"
+                text-anchor="middle"
+                font-size="5"
+                font-weight="bold"
+                fill="#FFFFFF">
+            FACT
+        </text>
+
+        <circle
+                cx="222"
+                cy="104"
+                r="8"
+                fill="#F97838"/>
+
+    </g>
+
+    <!-- Factura centro -->
+    <g filter="url(#shadow)">
+
+        <rect
+                x="188"
+                y="102"
+                width="40"
+                height="52"
+                rx="8"
+                fill="#FFFFFF"
+                stroke="#E2E8F0"
+                stroke-width="2"/>
+
+        <rect
+                x="196"
+                y="116"
+                width="24"
+                height="10"
+                rx="3"
+                fill="#1565C0"/>
+
+        <text
+                x="208"
+                y="124"
+                text-anchor="middle"
+                font-size="5"
+                font-weight="bold"
+                fill="#FFFFFF">
+            FACT
+        </text>
+
+        <circle
+                cx="222"
+                cy="144"
+                r="8"
+                fill="#A7E2FF"/>
+
+    </g>
+
+    <!-- Factura inferior -->
+    <g filter="url(#shadow)">
+
+        <rect
+                x="188"
+                y="142"
+                width="40"
+                height="52"
+                rx="8"
+                fill="#FFFFFF"
+                stroke="#E2E8F0"
+                stroke-width="2"/>
+
+        <rect
+                x="196"
+                y="156"
+                width="24"
+                height="10"
+                rx="3"
+                fill="#1565C0"/>
+
+        <text
+                x="208"
+                y="164"
+                text-anchor="middle"
+                font-size="5"
+                font-weight="bold"
+                fill="#FFFFFF">
+            FACT
+        </text>
+
+        <circle
+                cx="222"
+                cy="184"
+                r="8"
+                fill="#000927"/>
+
+    </g>
+
+</svg>

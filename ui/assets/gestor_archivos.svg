@@ -1,0 +1,204 @@
+<svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 256 256">
+
+    <defs>
+        <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+            <feDropShadow
+                    dx="0"
+                    dy="4"
+                    stdDeviation="5"
+                    flood-color="#000927"
+                    flood-opacity="0.10"/>
+        </filter>
+    </defs>
+
+    <!-- Carpeta principal -->
+    <g filter="url(#shadow)">
+
+        <path
+                d="M46 88
+               H92
+               L102 74
+               H210
+               C216 74 220 78 220 84
+               V176
+               C220 183 215 188 208 188
+               H48
+               C41 188 36 183 36 176
+               V98
+               C36 91 41 88 46 88Z"
+                fill="#1565C0"/>
+
+        <path
+                d="M36 98
+               H220
+               V176
+               C220 183 215 188 208 188
+               H48
+               C41 188 36 183 36 176Z"
+                fill="#FFFFFF"/>
+
+    </g>
+
+    <!-- Documento 1 -->
+    <g filter="url(#shadow)">
+
+        <rect
+                x="62"
+                y="110"
+                width="38"
+                height="48"
+                rx="7"
+                fill="#FFFFFF"
+                stroke="#E2E8F0"
+                stroke-width="2"/>
+
+        <rect
+                x="70"
+                y="122"
+                width="20"
+                height="8"
+                rx="3"
+                fill="#F97838"/>
+
+        <rect
+                x="70"
+                y="138"
+                width="18"
+                height="3"
+                rx="1.5"
+                fill="#CBD5E1"/>
+
+        <rect
+                x="70"
+                y="146"
+                width="15"
+                height="3"
+                rx="1.5"
+                fill="#CBD5E1"/>
+
+    </g>
+
+    <!-- Documento 2 -->
+    <g filter="url(#shadow)">
+
+        <rect
+                x="112"
+                y="110"
+                width="38"
+                height="48"
+                rx="7"
+                fill="#FFFFFF"
+                stroke="#E2E8F0"
+                stroke-width="2"/>
+
+        <rect
+                x="120"
+                y="122"
+                width="20"
+                height="8"
+                rx="3"
+                fill="#22C55E"/>
+
+        <rect
+                x="120"
+                y="138"
+                width="18"
+                height="3"
+                rx="1.5"
+                fill="#CBD5E1"/>
+
+        <rect
+                x="120"
+                y="146"
+                width="15"
+                height="3"
+                rx="1.5"
+                fill="#CBD5E1"/>
+
+    </g>
+
+    <!-- Documento 3 -->
+    <g filter="url(#shadow)">
+
+        <rect
+                x="162"
+                y="110"
+                width="38"
+                height="48"
+                rx="7"
+                fill="#FFFFFF"
+                stroke="#E2E8F0"
+                stroke-width="2"/>
+
+        <rect
+                x="170"
+                y="122"
+                width="20"
+                height="8"
+                rx="3"
+                fill="#F97838"/>
+
+        <rect
+                x="170"
+                y="138"
+                width="18"
+                height="3"
+                rx="1.5"
+                fill="#CBD5E1"/>
+
+        <rect
+                x="170"
+                y="146"
+                width="15"
+                height="3"
+                rx="1.5"
+                fill="#CBD5E1"/>
+
+    </g>
+
+    <!-- Flechas de organización -->
+    <g
+            stroke="#F97838"
+            stroke-width="3"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            fill="none">
+
+        <path d="M82 170 H180"/>
+
+        <path d="M172 162
+                 L180 170
+                 L172 178"/>
+
+    </g>
+
+    <!-- Icono organización -->
+    <g filter="url(#shadow)">
+
+        <circle
+                cx="196"
+                cy="72"
+                r="20"
+                fill="#F97838"/>
+
+        <path
+                d="M188 72
+               H204"
+
+                stroke="#FFFFFF"
+                stroke-width="3.5"
+                stroke-linecap="round"/>
+
+        <path
+                d="M196 64
+               V80"
+
+                stroke="#FFFFFF"
+                stroke-width="3.5"
+                stroke-linecap="round"/>
+
+    </g>
+
+</svg>
