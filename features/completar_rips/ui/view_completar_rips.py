@@ -146,7 +146,7 @@ class VentanaCompletarRips:
         self._logo_img = _cargar_logo(160)
         if self._logo_img:
             logo_lbl = tk.Label(side, image=self._logo_img, bg=NAVY)
-            logo_lbl.pack(padx=20, pady=(28, 0), anchor="w")
+            logo_lbl.pack(pady=(28, 0))
 
         # Title
         tk.Label(side, text="COMPLETAR\nRIPS",
@@ -158,14 +158,13 @@ class VentanaCompletarRips:
                  font=("Segoe UI", 10), fg=SKY, bg=NAVY,
                  anchor="w", wraplength=220, justify="left").pack(padx=28, fill="x")
 
-        # Decorative illustration
-        deco = tk.Canvas(side, bg=NAVY, height=100, highlightthickness=0)
-        deco.pack(fill="x", pady=(10, 0))
-        def _draw_deco(c, w=270, h=100):
-            c.create_oval(w//2-50, h//2-20, w//2+50, h//2+20, fill="#0A1A3A", outline="")
-            c.create_oval(w//2-30, h//2-10, w//2+30, h//2+10, fill="#F97838", outline="")
-            c.create_oval(w//2-15, h//2-5, w//2+15, h//2+5, fill="#A7E2FF", outline="")
-        deco.bind("<Configure>", lambda e: _draw_deco(deco, e.width, e.height))
+        # Feature icon
+        self._icon_sidebar = _cargar_icono(200)
+        if self._icon_sidebar:
+            icon_frame = tk.Frame(side, bg=NAVY, width=270, height=220)
+            icon_frame.pack(fill="x", pady=(20, 0))
+            icon_frame.pack_propagate(False)
+            tk.Label(icon_frame, image=self._icon_sidebar, bg=NAVY).place(relx=0.5, rely=0.5, anchor="center")
 
         # Version
         tk.Label(side, text="Versión 2.0",
@@ -179,11 +178,6 @@ class VentanaCompletarRips:
         # Header
         hdr = tk.Frame(main, bg=BG)
         hdr.pack(fill="x", padx=32, pady=(24, 20))
-        self._icon_img = _cargar_icono(36)
-        if self._icon_img:
-            tk.Label(hdr, image=self._icon_img, bg=BG).pack(side="left", padx=(0, 12))
-        else:
-            tk.Label(hdr, text="📄", font=("Segoe UI", 24), bg=BG).pack(side="left", padx=(0, 12))
         col = tk.Frame(hdr, bg=BG)
         col.pack(side="left")
         tk.Label(col, text="Completar plantilla RIPS",
