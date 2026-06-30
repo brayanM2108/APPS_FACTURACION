@@ -7,8 +7,11 @@ import os
 import threading
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from typing import Callable
+from contextlib import contextmanager
+from typing import Callable, Any
 import logging
+import tempfile
+import pandas as pd
 
 import pikepdf
 from pypdf import PdfReader
@@ -40,35 +43,144 @@ def leer_paginas(path: str) -> int:
         return -1
 
 
-def _abrir_pdf(path: str) -> pikepdf.Pdf | None:
+@contextmanager
+def _abrir_pdf(path: str):
     """
     Abre un PDF con pikepdf. Si el xref está corrupto intenta
     reconstruirlo copiando las páginas vía pypdf como fallback.
-    Devuelve un pikepdf.Pdf listo para usar, o None si es irrecuperable.
+    Devuelve un contexto (pdf, recuperado) que garantiza el cierre del PDF.
     """
+    pdf = None
+    temp_path = None
     try:
-        return pikepdf.open(path)
-    except pikepdf.PdfError as e:
-        logger.warning("pikepdf no pudo abrir %s (%s) — intentando recuperación con pypdf", path, e)
         try:
-            import io
-            from pypdf import PdfReader, PdfWriter
+            pdf = pikepdf.open(path)
+            yield pdf, False
+        except pikepdf.PdfError as e:
+            logger.warning("pikepdf no pudo abrir %s (%s) — intentando recuperación con pypdf", path, e)
+            try:
+                from pypdf import PdfReader, PdfWriter
 
-            reader = PdfReader(path, strict=False)
-            writer = PdfWriter()
-            for page in reader.pages:
-                writer.add_page(page)
+                reader = PdfReader(path, strict=False)
+                writer = PdfWriter()
+                for page in reader.pages:
+                    writer.add_page(page)
 
-            buf = io.BytesIO()
-            writer.write(buf)
-            buf.seek(0)
-            return pikepdf.open(buf)
+                with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as tmp:
+                    temp_path = tmp.name
+                writer.write(temp_path)
+                pdf = pikepdf.open(temp_path)
+                logger.info("Recuperacion exitosa con pypdf: %s", path)
+                yield pdf, True
+            except Exception:
+                logger.exception("Recuperación fallida para %s — se omitirá", path)
+                yield None, False
         except Exception:
-            logger.exception("Recuperación fallida para %s — se omitirá", path)
-            return None
-    except Exception:
-        logger.exception("Error inesperado al abrir %s — se omitirá", path)
-        return None
+            logger.exception("Error inesperado al abrir %s — se omitirá", path)
+            yield None, False
+    finally:
+        if pdf is not None:
+            try:
+                pdf.close()
+            except Exception:
+                pass
+        if temp_path:
+            try:
+                os.remove(temp_path)
+            except Exception:
+                pass
+
+
+def _documento_desde_nombre(nombre: str) -> str:
+    base = os.path.splitext(os.path.basename(nombre))[0]
+    if "_" in base:
+        return base.split("_", 1)[0]
+    return base
+
+
+def exportar_auditoria_unificacion(auditoria: list[dict[str, Any]], destino_pdf: str) -> str:
+    base = os.path.splitext(os.path.basename(destino_pdf))[0]
+    ruta_excel = os.path.join(os.path.dirname(destino_pdf), f"{base}_auditoria.xlsx")
+    columnas = [
+        "DOCUMENTO",
+        "ARCHIVO",
+        "RUTA",
+        "PAGINA_INICIO",
+        "PAGINA_FIN",
+        "PAGINAS",
+        "DESTINO",
+    ]
+    df = pd.DataFrame(auditoria or [], columns=columnas)
+    df.to_excel(ruta_excel, index=False)
+    return os.path.abspath(ruta_excel)
+
+
+def _unir_pdfs_sync(
+        paths: list[str],
+        destino: str,
+        on_progress: Callable[[int, int], None] | None = None,
+) -> tuple[int, list[str], list[str], dict[str, int], list[dict[str, Any]]]:
+    """
+    Une PDFs de forma síncrona y devuelve métricas del proceso.
+    """
+    writer = pikepdf.Pdf.new()
+    total_paginas = 0
+    omitidos: list[str] = []
+    recuperados: list[str] = []
+    paginas_recuperados: dict[str, int] = {}
+    auditoria: list[dict[str, Any]] = []
+
+    total_archivos = len(paths)
+
+    for index, path in enumerate(paths, start=1):
+        with _abrir_pdf(path) as resultado:
+            pdf, recuperado = resultado
+            if pdf is None:
+                logger.warning("Archivo omitido en la unión: %s", path)
+                omitidos.append(path)
+                if on_progress:
+                    on_progress(index, total_archivos)
+                continue
+            try:
+                if recuperado:
+                    recuperados.append(path)
+                    pagina_inicial = total_paginas + 1
+                pagina_inicio = total_paginas + 1
+                num_paginas = len(pdf.pages)
+                writer.pages.extend(pdf.pages)
+                total_paginas += num_paginas
+                if recuperado:
+                    paginas_recuperados[path] = pagina_inicial
+                pagina_fin = pagina_inicio + num_paginas - 1 if num_paginas > 0 else pagina_inicio
+                auditoria.append(
+                    {
+                        "DOCUMENTO": _documento_desde_nombre(path),
+                        "ARCHIVO": os.path.basename(path),
+                        "RUTA": path,
+                        "PAGINA_INICIO": pagina_inicio,
+                        "PAGINA_FIN": pagina_fin,
+                        "PAGINAS": num_paginas,
+                        "DESTINO": destino,
+                    }
+                )
+            except Exception:
+                logger.exception("Error al copiar páginas de %s — se omitirá", path)
+                omitidos.append(path)
+
+        if on_progress:
+            on_progress(index, total_archivos)
+
+    if os.path.exists(destino):
+        try:
+            os.remove(destino)
+        except Exception as remove_exc:
+            raise RuntimeError(f"No se pudo sobrescribir el destino: {destino}") from remove_exc
+    writer.save(destino, deterministic_id=True)
+    logger.debug(
+        "PDF guardado en %s (archivos=%d omitidos=%d paginas=%d)",
+        destino, len(paths), len(omitidos), total_paginas,
+    )
+    return total_paginas, omitidos, recuperados, paginas_recuperados, auditoria
 
 
 def cargar_metadatos_async(
@@ -110,7 +222,7 @@ def unir_pdfs(
         paths: list[str],
         destino: str,
         on_progress: Callable[[int, int], None],
-        on_done: Callable[[int, int, float], None],
+        on_done: Callable[[int, int, list[str], list[str], dict[str, int], list[dict[str, Any]], float], None],
         on_error: Callable[[Exception], None],
 ) -> None:
     """
@@ -123,7 +235,7 @@ def unir_pdfs(
 
     Callbacks:
       on_progress(archivos_procesados, total_archivos)
-      on_done(total_archivos, total_paginas, segundos_transcurridos)
+      on_done(total_archivos, total_paginas, omitidos, recuperados, paginas_recuperados, auditoria, segundos_transcurridos)
       on_error(excepcion)
     """
     total = len(paths)
@@ -132,36 +244,112 @@ def unir_pdfs(
         t_inicio = time.perf_counter()
         try:
             logger.debug("Iniciando unión de %d PDFs en %s", total, destino)
-            writer = pikepdf.Pdf.new()
-            total_paginas = 0
-            omitidos = 0
-
-            for i, path in enumerate(paths):
-                pdf = _abrir_pdf(path)
-                if pdf is None:
-                    logger.warning("Archivo omitido en la unión: %s", path)
-                    omitidos += 1
-                else:
-                    try:
-                        writer.pages.extend(pdf.pages)
-                        total_paginas += len(pdf.pages)
-                    except Exception:
-                        logger.exception("Error al copiar páginas de %s — se omitirá", path)
-                        omitidos += 1
-                    finally:
-                        pdf.close()
-
-                on_progress(i + 1, total)
-
-            writer.save(destino)
-            logger.debug(
-                "PDF guardado en %s (archivos=%d omitidos=%d paginas=%d)",
-                destino, total, omitidos, total_paginas,
+            total_paginas, omitidos, recuperados, paginas_recuperados, auditoria = _unir_pdfs_sync(
+                paths,
+                destino,
+                on_progress=on_progress,
             )
-            on_done(total, total_paginas, time.perf_counter() - t_inicio)
+            if recuperados:
+                logger.info("Recuperados con pypdf (%d): %s", len(recuperados), "; ".join(recuperados))
+            else:
+                logger.info("Recuperados con pypdf: ninguno")
+            if omitidos:
+                logger.info("Archivos omitidos (%d): %s", len(omitidos), "; ".join(omitidos))
+            else:
+                logger.info("Archivos omitidos: ninguno")
+            on_done(
+                total,
+                total_paginas,
+                omitidos,
+                recuperados,
+                paginas_recuperados,
+                auditoria,
+                time.perf_counter() - t_inicio,
+            )
 
         except Exception as e:
             logger.exception("Error durante la unión de PDFs: %s", e)
+            on_error(e)
+
+    threading.Thread(target=worker, daemon=True).start()
+
+def unir_pdfs_por_carpeta(
+        root_dir: str,
+        output_dir: str,
+        on_progress,
+        on_done,
+        on_error,
+) -> None:
+    """
+    Une PDFs por cada subcarpeta de primer nivel dentro de `root_dir`.
+
+    Los PDFs resultantes se guardan en `output_dir`
+    usando el nombre de cada subcarpeta.
+    """
+
+    def worker():
+        t_inicio = time.perf_counter()
+
+        try:
+            os.makedirs(output_dir, exist_ok=True)
+
+            subdirs = [e.path for e in os.scandir(root_dir) if e.is_dir()]
+
+            total = len(subdirs)
+            pdfs_generados = 0
+            total_paginas = 0
+
+            carpetas_sin_pdfs: list[str] = []
+            omitidos_por_carpeta: dict[str, list[str]] = {}
+            recuperados_por_carpeta: dict[str, list[str]] = {}
+
+            for i, carpeta in enumerate(subdirs):
+                nombre_carpeta = os.path.basename(carpeta)
+
+                destino = os.path.join(
+                    output_dir,
+                    f"{nombre_carpeta}.pdf"
+                )
+
+                pdfs = [
+                    os.path.join(carpeta, f)
+                    for f in os.listdir(carpeta)
+                    if f.lower().endswith(".pdf")
+                       and os.path.isfile(os.path.join(carpeta, f))
+                ]
+
+                if not pdfs:
+                    carpetas_sin_pdfs.append(carpeta)
+                    on_progress(i + 1, total, carpeta, destino)
+                    continue
+
+                total_pag, omitidos, recuperados, _paginas_recuperados, _ = (
+                    _unir_pdfs_sync(pdfs, destino)
+                )
+
+                total_paginas += total_pag
+                pdfs_generados += 1
+
+                if omitidos:
+                    omitidos_por_carpeta[carpeta] = omitidos
+
+                if recuperados:
+                    recuperados_por_carpeta[carpeta] = recuperados
+
+                on_progress(i + 1, total, carpeta, destino)
+
+            on_done(
+                total,
+                pdfs_generados,
+                total_paginas,
+                carpetas_sin_pdfs,
+                omitidos_por_carpeta,
+                recuperados_por_carpeta,
+                time.perf_counter() - t_inicio,
+                )
+
+        except Exception as e:
+            logger.exception("Error durante la unión por carpeta: %s", e)
             on_error(e)
 
     threading.Thread(target=worker, daemon=True).start()
