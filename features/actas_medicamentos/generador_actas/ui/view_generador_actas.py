@@ -1,83 +1,84 @@
 import tkinter as tk
 from tkinter import filedialog
 import os
+from ui.theme import BG, WHITE, TEXT, MUTED, BORDER, ACCENT, NAVY
 
 
 class VistaCarga:
     def __init__(self, parent, on_completado, on_volver):
         self.on_completado = on_completado
         self.on_volver = on_volver
-        self.frame = tk.Frame(parent, bg="#F0F4F8")
+        self.frame = tk.Frame(parent, bg=BG)
         self.frame.pack(fill="both", expand=True)
         self._crear_ui()
 
     def _crear_ui(self):
         tk.Label(
             self.frame, text="Generador de Actas ERON",
-            font=("Segoe UI", 15, "bold"), bg="#F0F4F8", fg="#1A365D"
+            font=("Segoe UI", 15, "bold"), bg=BG, fg=NAVY
         ).pack(pady=(28, 4))
 
         tk.Label(
             self.frame, text="Paso 1: Selecciona el archivo Excel con los datos y la hoja 'pdf'",
-            font=("Segoe UI", 9), bg="#F0F4F8", fg="#718096"
+            font=("Segoe UI", 9), bg=BG, fg=MUTED
         ).pack(pady=(0, 24))
 
         # Selección de archivo
-        frame_archivo = tk.Frame(self.frame, bg="#F0F4F8")
+        frame_archivo = tk.Frame(self.frame, bg=BG)
         frame_archivo.pack(padx=30, fill="x")
 
         tk.Label(
             frame_archivo, text="Archivo Excel (.xlsx):",
-            font=("Segoe UI", 9, "bold"), bg="#F0F4F8", fg="#2D3748"
+            font=("Segoe UI", 9, "bold"), bg=BG, fg=TEXT
         ).pack(anchor="w")
 
-        frame_input = tk.Frame(frame_archivo, bg="#F0F4F8")
+        frame_input = tk.Frame(frame_archivo, bg=BG)
         frame_input.pack(fill="x", pady=(4, 0))
 
         self.ruta_var = tk.StringVar()
         tk.Entry(
             frame_input, textvariable=self.ruta_var,
             font=("Segoe UI", 9), relief="flat",
-            bg="white", fg="#2D3748",
-            highlightthickness=1, highlightbackground="#CBD5E0",
-            highlightcolor="#4299E1"
+            bg=WHITE, fg=TEXT,
+            highlightthickness=1, highlightbackground=BORDER,
+            highlightcolor=ACCENT
         ).pack(side="left", fill="x", expand=True, ipady=6, padx=(0, 8))
 
         tk.Button(
             frame_input, text="Buscar",
             font=("Segoe UI", 9), relief="flat",
-            bg="#4299E1", fg="white", cursor="hand2",
-            activebackground="#3182CE", activeforeground="white",
+            bg=ACCENT, fg=WHITE, cursor="hand2",
+            activebackground="#3182CE", activeforeground=WHITE,
             padx=14, pady=6,
             command=self._seleccionar_archivo
         ).pack(side="left")
 
         # Carpeta de salida
-        frame_salida = tk.Frame(self.frame, bg="#F0F4F8")
+        frame_salida = tk.Frame(self.frame, bg=BG)
         frame_salida.pack(padx=30, fill="x", pady=(16, 0))
 
         tk.Label(
             frame_salida, text="Carpeta de salida para los PDFs:",
-            font=("Segoe UI", 9, "bold"), bg="#F0F4F8", fg="#2D3748"
+            font=("Segoe UI", 9, "bold"), bg=BG, fg=TEXT
         ).pack(anchor="w")
 
-        frame_salida_input = tk.Frame(frame_salida, bg="#F0F4F8")
+        frame_salida_input = tk.Frame(frame_salida, bg=BG)
         frame_salida_input.pack(fill="x", pady=(4, 0))
 
         self.carpeta_var = tk.StringVar()
         tk.Entry(
             frame_salida_input, textvariable=self.carpeta_var,
             font=("Segoe UI", 9), relief="flat",
-            bg="white", fg="#2D3748",
-            highlightthickness=1, highlightbackground="#CBD5E0",
-            highlightcolor="#4299E1"
+            bg=WHITE, fg=TEXT,
+            highlightthickness=1, highlightbackground=BORDER,
+            highlightcolor=ACCENT
         ).pack(side="left", fill="x", expand=True, ipady=6, padx=(0, 8))
 
         tk.Button(
             frame_salida_input, text="Buscar",
             font=("Segoe UI", 9), relief="flat",
-            bg="#4299E1", fg="white", cursor="hand2",
-            activebackground="#3182CE", activeforeground="white",
+            bg=ACCENT, fg=WHITE, cursor="hand2",
+            activebackground="#3182CE", activeforeground=WHITE,
             padx=14, pady=6,
             command=self._seleccionar_carpeta
         ).pack(side="left")
@@ -85,20 +86,20 @@ class VistaCarga:
         # Estado
         self.label_estado = tk.Label(
             self.frame, text="",
-            font=("Segoe UI", 9), bg="#F0F4F8", fg="#718096",
+            font=("Segoe UI", 9), bg=BG, fg=MUTED,
             wraplength=480, justify="left"
         )
         self.label_estado.pack(padx=30, pady=(18, 0), anchor="w")
 
         # Botones — ambos en el mismo frame_botones     # ✅ sin duplicado de btn_cargar
-        frame_botones = tk.Frame(self.frame, bg="#F0F4F8")
+        frame_botones = tk.Frame(self.frame, bg=BG)
         frame_botones.pack(pady=(20, 0))
 
         tk.Button(
             frame_botones, text="← Volver",
             font=("Segoe UI", 9), relief="flat",
-            bg="#718096", fg="white", cursor="hand2",
-            activebackground="#4A5568", activeforeground="white",
+            bg=MUTED, fg=WHITE, cursor="hand2",
+            activebackground="#4A5568", activeforeground=WHITE,
             padx=16, pady=8,
             command=self.on_volver                        # ✅ llama al orquestador
         ).pack(side="left", padx=(0, 10))
@@ -106,8 +107,8 @@ class VistaCarga:
         self.btn_cargar = tk.Button(
             frame_botones, text="📥  Cargar datos",
             font=("Segoe UI", 10, "bold"), relief="flat",
-            bg="#2F855A", fg="white", cursor="hand2",
-            activebackground="#276749", activeforeground="white",
+            bg="#1565C0", fg=WHITE, cursor="hand2",
+            activebackground="#1565C0", activeforeground=WHITE,
             padx=20, pady=10,
             command=self._cargar
         )
@@ -142,7 +143,7 @@ class VistaCarga:
             return
 
         self.btn_cargar.config(state="disabled", text="Cargando...")
-        self.label_estado.config(text="Leyendo archivo...", fg="#D69E2E")
+        self.label_estado.config(text="Leyendo archivo...", fg="#F97838")
         self.frame.update()
 
         exito, mensaje, df, erons = cargar_datos(ruta)
@@ -150,7 +151,7 @@ class VistaCarga:
         self.btn_cargar.config(state="normal", text="📥  Cargar datos")
 
         if exito:
-            self.label_estado.config(text=mensaje, fg="#276749")
+            self.label_estado.config(text=mensaje, fg="#1565C0")
             self.on_completado({
                 'ruta_archivo': ruta,
                 'carpeta_salida': carpeta,
@@ -175,7 +176,7 @@ class VistaGeneracion:
         """
         self.datos = datos
         self.on_volver = on_volver
-        self.frame = tk.Frame(parent, bg="#F0F4F8")
+        self.frame = tk.Frame(parent, bg=BG)
         self.frame.pack(fill="both", expand=True)
         self._crear_ui()
 
@@ -184,50 +185,50 @@ class VistaGeneracion:
 
         tk.Label(
             self.frame, text="Generador de Actas ERON",
-            font=("Segoe UI", 15, "bold"), bg="#F0F4F8", fg="#1A365D"
+            font=("Segoe UI", 15, "bold"), bg=BG, fg=NAVY
         ).pack(pady=(28, 4))
 
         tk.Label(
             self.frame, text="Paso 2: Configura la generación de PDFs",
-            font=("Segoe UI", 9), bg="#F0F4F8", fg="#718096"
+            font=("Segoe UI", 9), bg=BG, fg=MUTED
         ).pack(pady=(0, 20))
 
         # Información de datos cargados
-        frame_info = tk.Frame(self.frame, bg="white", highlightthickness=1, highlightbackground="#E2E8F0")
+        frame_info = tk.Frame(self.frame, bg=WHITE, highlightthickness=1, highlightbackground=BORDER)
         frame_info.pack(padx=30, fill="x", pady=(0, 20))
 
         tk.Label(
             frame_info,
             text=f"✅ Datos cargados: {len(self.datos['erons'])} ERON(s) encontrados",
-            font=("Segoe UI", 9, "bold"), bg="white", fg="#276749", anchor="w"
+            font=("Segoe UI", 9, "bold"), bg=WHITE, fg="#1565C0", anchor="w"
         ).pack(padx=14, pady=10, fill="x")
 
         # Imagen de firma (opcional)
-        frame_firma = tk.Frame(self.frame, bg="#F0F4F8")
+        frame_firma = tk.Frame(self.frame, bg=BG)
         frame_firma.pack(padx=30, fill="x", pady=(0, 16))
 
         tk.Label(
             frame_firma, text="Imagen de firma (opcional):",
-            font=("Segoe UI", 9, "bold"), bg="#F0F4F8", fg="#2D3748"
+            font=("Segoe UI", 9, "bold"), bg=BG, fg=TEXT
         ).pack(anchor="w")
 
-        frame_firma_input = tk.Frame(frame_firma, bg="#F0F4F8")
+        frame_firma_input = tk.Frame(frame_firma, bg=BG)
         frame_firma_input.pack(fill="x", pady=(4, 0))
 
         self.firma_var = tk.StringVar()
         tk.Entry(
             frame_firma_input, textvariable=self.firma_var,
             font=("Segoe UI", 9), relief="flat",
-            bg="white", fg="#2D3748",
-            highlightthickness=1, highlightbackground="#CBD5E0",
-            highlightcolor="#4299E1"
+            bg=WHITE, fg=TEXT,
+            highlightthickness=1, highlightbackground=BORDER,
+            highlightcolor=ACCENT
         ).pack(side="left", fill="x", expand=True, ipady=6, padx=(0, 8))
 
         tk.Button(
             frame_firma_input, text="Buscar",
             font=("Segoe UI", 9), relief="flat",
-            bg="#4299E1", fg="white", cursor="hand2",
-            activebackground="#3182CE", activeforeground="white",
+            bg=ACCENT, fg=WHITE, cursor="hand2",
+            activebackground="#3182CE", activeforeground=WHITE,
             padx=14, pady=6,
             command=self._seleccionar_firma
         ).pack(side="left")
@@ -235,20 +236,20 @@ class VistaGeneracion:
         # Estado
         self.label_estado = tk.Label(
             self.frame, text="",
-            font=("Segoe UI", 9), bg="#F0F4F8", fg="#718096",
+            font=("Segoe UI", 9), bg=BG, fg=MUTED,
             wraplength=480, justify="left"
         )
         self.label_estado.pack(padx=30, pady=(10, 0), anchor="w")
 
         # Botones
-        frame_botones = tk.Frame(self.frame, bg="#F0F4F8")
+        frame_botones = tk.Frame(self.frame, bg=BG)
         frame_botones.pack(pady=(20, 0))
 
         tk.Button(
             frame_botones, text="← Volver",
             font=("Segoe UI", 9), relief="flat",
-            bg="#718096", fg="white", cursor="hand2",
-            activebackground="#4A5568", activeforeground="white",
+            bg=MUTED, fg=WHITE, cursor="hand2",
+            activebackground="#4A5568", activeforeground=WHITE,
             padx=16, pady=8,
             command=self.on_volver
         ).pack(side="left", padx=(0, 10))
@@ -256,8 +257,8 @@ class VistaGeneracion:
         self.btn_generar = tk.Button(
             frame_botones, text="📄  Generar PDFs",
             font=("Segoe UI", 10, "bold"), relief="flat",
-            bg="#2F855A", fg="white", cursor="hand2",
-            activebackground="#276749", activeforeground="white",
+            bg="#1565C0", fg=WHITE, cursor="hand2",
+            activebackground="#1565C0", activeforeground=WHITE,
             padx=20, pady=10,
             command=self._generar_pdfs
         )
@@ -281,7 +282,7 @@ class VistaGeneracion:
         firma_ruta = self.firma_var.get().strip()
 
         self.btn_generar.config(state="disabled", text="Generando...")
-        self.label_estado.config(text="Iniciando generación de PDFs...", fg="#D69E2E")
+        self.label_estado.config(text="Iniciando generación de PDFs...", fg="#F97838")
         self.frame.update()
 
         def _generar_en_hilo():
@@ -322,7 +323,7 @@ class VistaGeneracion:
     def _mostrar_resultado(self, exito, mensaje):
         self.btn_generar.config(state="normal", text="📄  Generar PDFs")
         if exito:
-            self.label_estado.config(text=mensaje, fg="#276749")
+            self.label_estado.config(text=mensaje, fg="#1565C0")
         else:
             self.label_estado.config(text=f"Error: {mensaje}", fg="#C53030")
 
