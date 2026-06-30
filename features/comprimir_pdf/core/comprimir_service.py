@@ -20,7 +20,6 @@ from PIL import Image
 
 logger = logging.getLogger(__name__)
 
-# Configuracion de niveles
 NIVELES: dict[str, int] = {
     "Bajo":  85,
     "Medio": 60,
@@ -28,7 +27,7 @@ NIVELES: dict[str, int] = {
 }
 
 # Umbral por defecto en bytes (300 MB)
-UMBRAL_DEFECTO = 100 * 1024 * 1024
+UMBRAL_DEFECTO = 300 * 1024 * 1024
 
 
 def tamaño_bytes(path: str) -> int:
