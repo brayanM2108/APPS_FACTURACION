@@ -3,12 +3,18 @@ features/comprimir_pdf/ui/view_comprimir.py
 Ventana standalone para comprimir un PDF individual.
 Toda la logica vive en comprimir_service.py.
 """
+import io
 import logging
 import os
 import time
 import tkinter as tk
+from pathlib import Path
 from tkinter import filedialog, messagebox, ttk
-from ui.theme import aplicar_theme_ventana, BG as THEME_BG
+
+import cairosvg
+from PIL import Image, ImageTk
+
+from ui.theme import aplicar_theme_ventana, COMPACT_SIZE, BG as THEME_BG, WHITE, TEXT, MUTED, BORDER, ACCENT, ACCENT2, NAVY, ORANGE
 
 from features.comprimir_pdf.core.comprimir_service import (
     NIVELES,
@@ -19,17 +25,45 @@ from features.comprimir_pdf.core.comprimir_service import (
     tamaño_bytes,
 )
 
-# Paleta
-BG = "#F0F4F8"
+# Paleta Goleman
+BG = "#F5F7FA"
 WHITE = "#FFFFFF"
-ACCENT = "#2B6CB0"
-ACCENT2 = "#1A4A8A"
-TEXT = "#2D3748"
-MUTED = "#718096"
-SUCCESS = "#276749"
+NAVY = "#000927"
+ORANGE = "#F97838"
+BLUE = "#1565C0"
+SKY = "#A7E2FF"
+ACCENT = BLUE
+ACCENT2 = "#0F4A8A"
+TEXT = "#1E293B"
+MUTED = "#64748B"
+SUCCESS = BLUE
 BORDER = "#E2E8F0"
 WARN_BG = "#FFFBEB"
 WARN_FG = "#B7791F"
+
+
+def _cargar_logo(size):
+    try:
+        logo_path = Path(__file__).parents[3] / "ui" / "LOGO_OSCURO.svg"
+        if logo_path.exists():
+            png_data = cairosvg.svg2png(url=str(logo_path), output_width=size, output_height=size)
+            img = Image.open(io.BytesIO(png_data))
+            return ImageTk.PhotoImage(img)
+    except Exception:
+        pass
+    return None
+
+
+def _cargar_icono(size):
+    try:
+        icono_path = Path(__file__).parents[3] / "ui" / "assets" / "comprimir_pdf.svg"
+        if icono_path.exists():
+            png_data = cairosvg.svg2png(url=str(icono_path), output_width=size, output_height=size)
+            img = Image.open(io.BytesIO(png_data))
+            return ImageTk.PhotoImage(img)
+    except Exception:
+        pass
+    return None
 
 
 class _TkTextLogHandler(logging.Handler):
@@ -65,11 +99,12 @@ class VentanaComprimirPDF(tk.Toplevel):
         aplicar_theme_ventana(
             self,
             title="Comprimir PDF",
-            size=(600, 620),
+            size=COMPACT_SIZE,
             min_size=None,
             bg=THEME_BG,
-            resizable=(False, False),
+            resizable=(True, True),
             modal=True,
+            fullscreen=True,
         )
 
         self._comprimiendo = False
@@ -89,18 +124,52 @@ class VentanaComprimirPDF(tk.Toplevel):
 
     # UI
     def _build_ui(self):
+        outer = tk.Frame(self, bg=THEME_BG)
+        outer.pack(fill="both", expand=True)
+
+        # Sidebar
+        side = tk.Frame(outer, bg=NAVY, width=270)
+        side.pack(side="left", fill="y")
+        side.pack_propagate(False)
+
+        self._logo_img = _cargar_logo(160)
+        if self._logo_img:
+            tk.Label(side, image=self._logo_img, bg=NAVY).pack(pady=(28, 0))
+
+        tk.Label(side, text="COMPRIMIR\nPDF",
+                 font=("Segoe UI", 16, "bold"), fg=WHITE, bg=NAVY,
+                 anchor="w", justify="left").pack(padx=24, pady=(16, 8), fill="x")
+        tk.Label(side, text="Comprime PDFs para reducir su tamaño manteniendo la calidad.",
+                 font=("Segoe UI", 10), fg=SKY, bg=NAVY,
+                 anchor="w", wraplength=220, justify="left").pack(padx=24, fill="x")
+        # Feature icon
+        self._icon_sidebar = _cargar_icono(200)
+        if self._icon_sidebar:
+            icon_frame = tk.Frame(side, bg=NAVY, width=270, height=220)
+            icon_frame.pack(fill="x", pady=(20, 0))
+            icon_frame.pack_propagate(False)
+            tk.Label(icon_frame, image=self._icon_sidebar, bg=NAVY).place(relx=0.5, rely=0.5, anchor="center")
+
+        tk.Label(side, text="Versión 2.0",
+                 font=("Segoe UI", 9), fg=MUTED, bg=NAVY,
+                 anchor="w").pack(padx=24, pady=(0, 24), side="bottom", fill="x")
+
+        # Main content
+        main = tk.Frame(outer, bg=THEME_BG)
+        main.pack(side="left", fill="both", expand=True)
+
         # Cabecera
-        h = tk.Frame(self, bg=THEME_BG)
+        h = tk.Frame(main, bg=THEME_BG)
         h.pack(fill="x", padx=24, pady=(20, 4))
         tk.Label(
             h,
             text="Comprimir PDF",
             font=("Segoe UI", 16, "bold"),
             fg=ACCENT,
-            bg=BG,
+            bg=THEME_BG,
         ).pack(side="left")
 
-        body = tk.Frame(self, bg=THEME_BG)
+        body = tk.Frame(main, bg=THEME_BG)
         body.pack(fill="both", expand=True, padx=24, pady=8)
 
         # Archivo origen
